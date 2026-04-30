@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export default function ResidentsPage() {
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
-  const [enabledLayers, setEnabledLayers] = useState<string[]>(['stories']);
+  const [enabledLayers, setEnabledLayers] = useState<string[]>(['community-memories']);
   const [enabledSublayers, setEnabledSublayers] = useState<string[]>(['resident-stories', 'cultural-traditions']);
 
   // 过滤出社区故事相关的标记点
@@ -210,24 +210,24 @@ export default function ResidentsPage() {
                       </div>
                       <button
                         onClick={() => {
-                          const newLayers = enabledLayers.includes('stories') 
-                            ? enabledLayers.filter(l => l !== 'stories')
-                            : [...enabledLayers, 'stories'];
+                          const newLayers = enabledLayers.includes('community-memories') 
+                            ? enabledLayers.filter(l => l !== 'community-memories')
+                            : [...enabledLayers, 'community-memories'];
                           handleLayerToggle(newLayers, enabledSublayers);
                         }}
                         className={`w-10 h-5 rounded-full transition-colors cursor-pointer relative ${
-                          enabledLayers.includes('stories') ? 'bg-emerald-500' : 'bg-gray-300'
+                          enabledLayers.includes('community-memories') ? 'bg-emerald-500' : 'bg-gray-300'
                         }`}
                       >
                         <div
                           className={`w-4 h-4 bg-white rounded-full shadow transition-transform absolute top-0.5 ${
-                            enabledLayers.includes('stories') ? 'translate-x-5' : 'translate-x-0.5'
+                            enabledLayers.includes('community-memories') ? 'translate-x-5' : 'translate-x-0.5'
                           }`}
                         />
                       </button>
                     </div>
 
-                    {enabledLayers.includes('stories') && (
+                    {enabledLayers.includes('community-memories') && (
                       <div className="space-y-1 ml-6">
                         {[
                           { id: 'resident-stories', name: 'Resident Stories' },
