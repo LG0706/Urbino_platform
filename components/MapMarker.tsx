@@ -58,7 +58,7 @@ export default function MapMarker({ marker, isOpen, onClose }: MapMarkerProps) {
         </p>
         
         <Link
-          href={`/sites/${marker.id}`}
+          href={`/urbino/sites/${marker.id}`}
           className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors cursor-pointer"
         >
           Read more
