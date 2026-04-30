@@ -342,7 +342,7 @@ export default function VisitorsPage() {
 
                         {/* Action Button */}
                         <Link 
-                          href={`/routes/${route.id}`}
+                          href={`/urbino/routes/${route.id}`}
                           className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-lg text-xs font-medium transition-colors whitespace-nowrap cursor-pointer block text-center"
                         >
                           View Details
@@ -405,7 +405,7 @@ export default function VisitorsPage() {
 
                         {/* Action Button */}
                         <Link 
-                          href={`/sites/${marker.id}`}
+                          href={`/urbino/sites/${marker.id}`}
                           className="w-full mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg text-xs font-medium transition-colors whitespace-nowrap cursor-pointer block text-center"
                         >
                           Learn More

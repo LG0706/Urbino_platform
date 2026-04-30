@@ -304,7 +304,7 @@ export default function RisksPage() {
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${getSeverityColor(area.severity)}`}>
                             {area.type === 'shelter' || area.type === 'medical' ? 'Available' : `${area.severity} Risk`}
                           </span>
-                          <Link href={`/sites/${area.id}`} className="text-emerald-600 hover:text-emerald-700 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap">
+                          <Link href={`/urbino/sites/${area.id}`} className="text-emerald-600 hover:text-emerald-700 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap">
                             View Details
                           </Link>
                         </div>

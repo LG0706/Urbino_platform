@@ -364,7 +364,7 @@ export default function HeritagePage() {
                            site.subcategory === 'palaces' ? 'Palace' : 'Natural Site'}
                         </span>
                         <Link
-                          href={`/sites/${site.id}`}
+                          href={`/urbino/sites/${site.id}`}
                           className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors whitespace-nowrap"
                         >
                           Learn More

@@ -297,7 +297,7 @@ export default function ResidentsPage() {
                           Community Story
                         </span>
                         <Link
-                          href={`/sites/${story.markerId}`}
+                          href={`/urbino/sites/${story.markerId}`}
                           className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors cursor-pointer whitespace-nowrap"
                         >
                           Read Full Story

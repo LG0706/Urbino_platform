@@ -317,7 +317,7 @@ export default function NewsPage() {
                       </p>
                       
                       <Link
-                        href={`/events/${event.id}`}
+                        href={`/urbino/events/${event.id}`}
                         className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors whitespace-nowrap"
                       >
                         View Details

@@ -7,11 +7,11 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { name: 'Heritage & Environment', href: '/heritage' },
-    { name: "Residents' Life", href: '/residents' },
-    { name: "Visitors' Guide", href: '/visitors' },
-    { name: 'Risks & Actions', href: '/risks' },
-    { name: 'Events & News', href: '/news' },
+    { name: 'Heritage & Environment', href: '/urbino/heritage' },
+    { name: "Residents' Life", href: '/urbino/residents' },
+    { name: "Visitors' Guide", href: '/urbino/visitors' },
+    { name: 'Risks & Actions', href: '/urbino/risks' },
+    { name: 'Events & News', href: '/urbino/news' },
   ];
 
   return (

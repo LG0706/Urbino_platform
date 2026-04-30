@@ -469,7 +469,7 @@ Last month, one of my students, a young woman from Japan, completed her first sm
                       {relatedSites.map((site) => (
                         <Link
                           key={site.id}
-                          href={`/sites/${site.id}`}
+                          href={`/urbino/sites/${site.id}`}
                           className="block p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                         >
                           <img
@@ -601,7 +601,7 @@ Last month, one of my students, a young woman from Japan, completed her first sm
                     {relatedSites.map((site) => (
                       <Link
                         key={site.id}
-                        href={`/sites/${site.id}`}
+                        href={`/urbino/sites/${site.id}`}
                         className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                       >
                         <div className="flex items-center space-x-3">
