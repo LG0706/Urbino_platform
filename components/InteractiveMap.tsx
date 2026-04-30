@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -65,15 +64,40 @@ export default function InteractiveMap({
     'cultural',
   ]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
 
   const mapCenter = { lat: 43.726149, lng: 12.636364 };
   const mapZoom = 14;
   const mapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  // Wait for the map div to have real dimensions before rendering markers
+  useEffect(() => {
+    const checkReady = () => {
+      const bounds = mapRef.current?.getBoundingClientRect();
+      if (bounds && bounds.width > 0 && bounds.height > 0) {
+        setMapReady(true);
+      } else {
+        setTimeout(checkReady, 100);
+      }
+    };
+    checkReady();
+
+    const handleResize = () => setMapReady(false);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Re-trigger mapReady after resize settles
+  useEffect(() => {
+    if (!mapReady) {
+      const t = setTimeout(() => setMapReady(true), 150);
+      return () => clearTimeout(t);
+    }
+  }, [mapReady]);
+
   const getMapUrl = (basemap: string) => {
     const palazzoCoords = '43.726149,12.636364';
-
     if (basemap === 'satellite') {
       return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2908.713291786915!2d12.634364!3d${mapCenter.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f${mapZoom}.1!3m3!1m2!1s0x132d168b5f7e8e21%3A0x7a6b5d5d8b5f7e8e!2sPalazzo%20Ducale%2C%20Urbino!5e1!3m2!1sen!2sus!4v1640995200000!5m2!1sen!2sus&center=${palazzoCoords}&zoom=${mapZoom}`;
     }
@@ -196,30 +220,34 @@ export default function InteractiveMap({
   });
 
   const visibleRiskAreas = riskAreas.filter((area) => enabledLayers.includes('risk-areas'));
-
   const visibleRoutes = routes.filter((route) => enabledLayers.includes('routes-itineraries'));
-
   const shouldShowEvacuationRoutes =
     enabledLayers.includes('evacuation-routes') && enabledSublayers.includes('primary-routes');
 
   const latLngToPixel = (lat: number, lng: number) => {
     const mapBounds = mapRef.current?.getBoundingClientRect();
-    if (!mapBounds) return { x: 0, y: 0 };
+    if (!mapBounds || mapBounds.width === 0) return { x: 0, y: 0 };
 
     const centerLat = mapCenter.lat;
     const centerLng = mapCenter.lng;
 
-    const latDiff = lat - centerLat;
-    const lngDiff = lng - centerLng;
+    // Improved: use Mercator-aware scaling at zoom 14
+    const TILE_SIZE = 256;
+    const scale = TILE_SIZE * Math.pow(2, mapZoom);
 
-    const scale = Math.pow(2, mapZoom - 1);
-    const pixelPerDegreeX = (mapBounds.width * scale) / 360;
-    const pixelPerDegreeY = (mapBounds.height * scale) / 180;
+    const toWorldX = (lng: number) => ((lng + 180) / 360) * scale;
+    const toWorldY = (lat: number) => {
+      const sinLat = Math.sin((lat * Math.PI) / 180);
+      return ((0.5 - Math.log((1 + sinLat) / (1 - sinLat)) / (4 * Math.PI)) * scale);
+    };
 
-    const centerLatRadians = centerLat * (Math.PI / 180);
+    const worldCenterX = toWorldX(centerLng);
+    const worldCenterY = toWorldY(centerLat);
+    const worldX = toWorldX(lng);
+    const worldY = toWorldY(lat);
 
-    const x = mapBounds.width / 2 + lngDiff * pixelPerDegreeX * Math.cos(centerLatRadians);
-    const y = mapBounds.height / 2 - latDiff * pixelPerDegreeY;
+    const x = mapBounds.width / 2 + (worldX - worldCenterX);
+    const y = mapBounds.height / 2 + (worldY - worldCenterY);
 
     return { x, y };
   };
@@ -247,7 +275,6 @@ export default function InteractiveMap({
     const newFilters = activeFilters.includes(theme)
       ? activeFilters.filter((f) => f !== theme)
       : [...activeFilters, theme];
-
     setActiveFilters(newFilters);
     onFilterChange?.(newFilters);
   };
@@ -261,15 +288,12 @@ export default function InteractiveMap({
 
   const drawRoute = (waypoints: RouteData['waypoints'], color: string, isSelected: boolean) => {
     if (waypoints.length < 2) return null;
-
     return (
       <svg className="absolute inset-0 pointer-events-none z-20" style={{ width: '100%', height: '100%' }}>
         {waypoints.map((waypoint, index) => {
           if (index === waypoints.length - 1) return null;
-
           const start = latLngToPixel(waypoint.lat, waypoint.lng);
           const end = latLngToPixel(waypoints[index + 1].lat, waypoints[index + 1].lng);
-
           return (
             <line
               key={index}
@@ -290,12 +314,9 @@ export default function InteractiveMap({
 
   const drawRiskPolygon = (coordinates: RiskArea['coordinates'], color: string, opacity: number) => {
     if (coordinates.length < 3) return null;
-
     const points = coordinates.map((coord) => latLngToPixel(coord.lat, coord.lng));
-    const pathData = points
-      .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-      .join(' ') + ' Z';
-
+    const pathData =
+      points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ') + ' Z';
     return (
       <svg className="absolute inset-0 pointer-events-none z-10" style={{ width: '100%', height: '100%' }}>
         <path d={pathData} fill={color} fillOpacity={opacity} stroke={color} strokeWidth={2} strokeOpacity={0.8} />
@@ -318,140 +339,105 @@ export default function InteractiveMap({
       />
 
       <div ref={mapRef} className="absolute inset-0 pointer-events-none" onClick={handleOverlayClick}>
-        {/* Render routes when the routes-itineraries layer is enabled */}
-        {visibleRoutes && visibleRoutes.length > 0 && visibleRoutes.map((route) => (
-          <div key={route.id} className="pointer-events-auto">
-            {drawRoute(route.waypoints, route.color, selectedRoute === route.id)}
+        {mapReady && (
+          <>
+            {/* Render routes */}
+            {visibleRoutes && visibleRoutes.length > 0 && visibleRoutes.map((route) => (
+              <div key={route.id} className="pointer-events-auto">
+                {drawRoute(route.waypoints, route.color, selectedRoute === route.id)}
+                {route.waypoints.map((waypoint, index) => {
+                  const position = latLngToPixel(waypoint.lat, waypoint.lng);
+                  const mapBounds = mapRef.current?.getBoundingClientRect();
+                  if (!mapBounds) return null;
+                  const margin = 50;
+                  if (
+                    position.x < -margin ||
+                    position.x > mapBounds.width + margin ||
+                    position.y < -margin ||
+                    position.y > mapBounds.height + margin
+                  ) return null;
+                  const isStart = index === 0;
+                  const isEnd = index === route.waypoints.length - 1;
+                  return (
+                    <button
+                      key={`${route.id}-${index}`}
+                      className="absolute pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-30"
+                      style={{ left: `${position.x}px`, top: `${position.y}px` }}
+                      onClick={(e) => { e.stopPropagation(); onRouteClick?.(route.id); }}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full border-3 border-white shadow-xl flex items-center justify-center ${selectedRoute === route.id ? 'scale-125' : ''}`}
+                        style={{ backgroundColor: route.color }}
+                      >
+                        {isStart && <i className="ri-play-fill text-white text-xs"></i>}
+                        {isEnd && <i className="ri-flag-fill text-white text-xs"></i>}
+                        {!isStart && !isEnd && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
 
-            {route.waypoints.map((waypoint, index) => {
-              const position = latLngToPixel(waypoint.lat, waypoint.lng);
+            {/* Render risk area polygons */}
+            {visibleRiskAreas && visibleRiskAreas.length > 0 && visibleRiskAreas.map((area) => (
+              <div key={area.id}>
+                {drawRiskPolygon(area.coordinates, area.color, area.opacity)}
+                {(() => {
+                  const centerLat = area.coordinates.reduce((sum, coord) => sum + coord.lat, 0) / area.coordinates.length;
+                  const centerLng = area.coordinates.reduce((sum, coord) => sum + coord.lng, 0) / area.coordinates.length;
+                  const centerPosition = latLngToPixel(centerLat, centerLng);
+                  const mapBounds = mapRef.current?.getBoundingClientRect();
+                  if (!mapBounds) return null;
+                  const margin = 50;
+                  if (
+                    centerPosition.x < -margin ||
+                    centerPosition.x > mapBounds.width + margin ||
+                    centerPosition.y < -margin ||
+                    centerPosition.y > mapBounds.height + margin
+                  ) return null;
+                  return (
+                    <button
+                      className="absolute pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-30"
+                      style={{ left: `${centerPosition.x}px`, top: `${centerPosition.y}px` }}
+                      onClick={(e) => { e.stopPropagation(); handleRiskAreaClick(area.id); }}
+                    >
+                      <div className="w-8 h-8 rounded-full border-3 border-white shadow-xl flex items-center justify-center" style={{ backgroundColor: area.color }}>
+                        <i className="ri-alert-line text-white text-lg"></i>
+                      </div>
+                    </button>
+                  );
+                })()}
+              </div>
+            ))}
+
+            {/* Render all visible markers */}
+            {visibleMarkers.map((marker) => {
+              const position = latLngToPixel(marker.position.lat, marker.position.lng);
               const mapBounds = mapRef.current?.getBoundingClientRect();
               if (!mapBounds) return null;
-
               const margin = 50;
               if (
                 position.x < -margin ||
                 position.x > mapBounds.width + margin ||
                 position.y < -margin ||
                 position.y > mapBounds.height + margin
-              ) {
-                return null;
-              }
-
-              const isStart = index === 0;
-              const isEnd = index === route.waypoints.length - 1;
-
+              ) return null;
               return (
                 <button
-                  key={`${route.id}-${index}`}
+                  key={marker.id}
                   className="absolute pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-30"
-                  style={{
-                    left: `${position.x}px`,
-                    top: `${position.y}px`,
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRouteClick?.(route.id);
-                  }}
+                  style={{ left: `${position.x}px`, top: `${position.y}px` }}
+                  onClick={(e) => { e.stopPropagation(); handleMarkerClick(marker.id); }}
                 >
-                  <div
-                    className={`w-6 h-6 rounded-full border-3 border-white shadow-xl flex items-center justify-center ${
-                      selectedRoute === route.id ? 'scale-125' : ''
-                    }`}
-                    style={{ backgroundColor: route.color }}
-                  >
-                    {isStart && <i className="ri-play-fill text-white text-xs"></i>}
-                    {isEnd && <i className="ri-flag-fill text-white text-xs"></i>}
-                    {!isStart && !isEnd && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                  <div className="w-10 h-10 rounded-full border-4 border-white shadow-xl flex items-center justify-center" style={{ backgroundColor: marker.color }}>
+                    <div className="w-4 h-4 bg-white rounded-full"></div>
                   </div>
                 </button>
               );
             })}
-          </div>
-        ))}
-
-        {/* Render risk area polygons when the risk-areas layer is enabled */}
-        {visibleRiskAreas && visibleRiskAreas.length > 0 && visibleRiskAreas.map((area) => (
-          <div key={area.id}>
-            {drawRiskPolygon(area.coordinates, area.color, area.opacity)}
-
-            {/* Center marker for risk area */}
-            {(() => {
-              const centerLat =
-                area.coordinates.reduce((sum, coord) => sum + coord.lat, 0) / area.coordinates.length;
-              const centerLng =
-                area.coordinates.reduce((sum, coord) => sum + coord.lng, 0) / area.coordinates.length;
-              const centerPosition = latLngToPixel(centerLat, centerLng);
-
-              const mapBounds = mapRef.current?.getBoundingClientRect();
-              if (!mapBounds) return null;
-
-              const margin = 50;
-              if (
-                centerPosition.x < -margin ||
-                centerPosition.x > mapBounds.width + margin ||
-                centerPosition.y < -margin ||
-                centerPosition.y > mapBounds.height + margin
-              ) {
-                return null;
-              }
-
-              return (
-                <button
-                  className="absolute pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-30"
-                  style={{
-                    left: `${centerPosition.x}px`,
-                    top: `${centerPosition.y}px`,
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRiskAreaClick(area.id);
-                  }}
-                >
-                  <div className="w-8 h-8 rounded-full border-3 border-white shadow-xl flex items-center justify-center" style={{ backgroundColor: area.color }}>
-                    <i className="ri-alert-line text-white text-lg"></i>
-                  </div>
-                </button>
-              );
-            })()}
-          </div>
-        ))}
-
-        {/* Render all visible markers */}
-        {visibleMarkers.map((marker) => {
-          const position = latLngToPixel(marker.position.lat, marker.position.lng);
-          const mapBounds = mapRef.current?.getBoundingClientRect();
-          if (!mapBounds) return null;
-
-          const margin = 50;
-          if (
-            position.x < -margin ||
-            position.x > mapBounds.width + margin ||
-            position.y < -margin ||
-            position.y > mapBounds.height + margin
-          ) {
-            return null;
-          }
-
-          return (
-            <button
-              key={marker.id}
-              className="absolute pointer-events-auto transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform z-30"
-              style={{
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleMarkerClick(marker.id);
-              }}
-            >
-              <div className="w-10 h-10 rounded-full border-4 border-white shadow-xl flex items-center justify-center" style={{ backgroundColor: marker.color }}>
-                <div className="w-4 h-4 bg-white rounded-full"></div>
-              </div>
-            </button>
-          );
-        })}
+          </>
+        )}
       </div>
 
       {selectedMarkerData && (
@@ -469,7 +455,6 @@ export default function InteractiveMap({
             >
               <i className="ri-close-line text-gray-600"></i>
             </button>
-
             <div className="relative">
               <img
                 src={`https://readdy.ai/api/search-image?query=${
@@ -486,7 +471,6 @@ export default function InteractiveMap({
                 <span className="px-3 py-1 rounded-full text-xs font-medium text-white bg-red-600">Risk Area</span>
               </div>
             </div>
-
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{selectedRiskAreaData.name}</h3>
               <p className="text-gray-600 text-sm mb-4">
@@ -496,17 +480,9 @@ export default function InteractiveMap({
                   ? 'Geological monitoring station for hillside stability control. Regular assessments ensure early warning for potential landslide risks.'
                   : 'Emergency services station providing rapid response capabilities for the local area. Equipped with rescue teams and safety equipment.'}
               </p>
-
               <div className="flex items-center justify-between">
-                <span
-                  className="px-2 py-1 rounded text-xs font-medium text-white"
-                  style={{ backgroundColor: selectedRiskAreaData.color }}
-                >
-                  {selectedRiskAreaData.type === 'flood'
-                    ? 'Flood Risk'
-                    : selectedRiskAreaData.type === 'landslide'
-                    ? 'Landslide Risk'
-                    : 'Emergency Services'}
+                <span className="px-2 py-1 rounded text-xs font-medium text-white" style={{ backgroundColor: selectedRiskAreaData.color }}>
+                  {selectedRiskAreaData.type === 'flood' ? 'Flood Risk' : selectedRiskAreaData.type === 'landslide' ? 'Landslide Risk' : 'Emergency Services'}
                 </span>
                 <button className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors cursor-pointer whitespace-nowrap">
                   View Details
