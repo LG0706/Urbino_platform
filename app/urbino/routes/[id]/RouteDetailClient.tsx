@@ -28,7 +28,7 @@ export default function RouteDetailClient({ routeId }: RouteDetailClientProps) {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Route Not Found</h2>
             <p className="text-gray-600 mb-6">The route you're looking for doesn't exist.</p>
             <Link 
-              href="/visitors"
+              href="/urbino/visitors"
               className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors cursor-pointer whitespace-nowrap"
             >
               <i className="ri-arrow-left-line mr-2"></i>
@@ -174,7 +174,7 @@ export default function RouteDetailClient({ routeId }: RouteDetailClientProps) {
       <main className="pt-8">
         <div className="max-w-7xl mx-auto px-6">
           <Link 
-            href="/visitors"
+            href="/urbino/visitors"
             className="inline-flex items-center text-emerald-600 hover:text-emerald-700 mb-6 cursor-pointer"
           >
             <i className="ri-arrow-left-line mr-2"></i>

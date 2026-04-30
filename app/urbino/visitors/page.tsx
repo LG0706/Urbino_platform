@@ -460,16 +460,16 @@ export default function VisitorsPage() {
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
-                <a href="/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <a href="/urbino/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Heritage Sites
                 </a>
-                <a href="/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <a href="/urbino/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Residents' Life
                 </a>
-                <a href="/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <a href="/urbino/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Safety Information
                 </a>
-                <a href="/news" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <a href="/urbino/news" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Events & News
                 </a>
               </div>

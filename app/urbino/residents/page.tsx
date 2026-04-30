@@ -172,7 +172,7 @@ export default function ResidentsPage() {
                 </button>
               </div>
 
-              <Link href="/residents/business" className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer block">
+              <Link href="/urbino/residents/business" className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer block">
                 <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mb-4">
                   <i className="ri-store-line text-pink-600 text-xl"></i>
                 </div>

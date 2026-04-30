@@ -384,7 +384,7 @@ export default function NewsPage() {
                       Starting April 1st, municipal offices will extend hours on Thursdays until 7:00 PM 
                       to better serve working residents and students.
                     </p>
-                    <Link href="/residents" className="text-amber-700 hover:text-amber-800 font-medium text-sm flex items-center cursor-pointer">
+                    <Link href="/urbino/residents" className="text-amber-700 hover:text-amber-800 font-medium text-sm flex items-center cursor-pointer">
                       More details
                       <i className="ri-arrow-right-line ml-1"></i>
                     </Link>
@@ -403,7 +403,7 @@ export default function NewsPage() {
                       New organic waste collection starts Monday. Pick up your green bins at 
                       the municipal office and join our sustainability initiative.
                     </p>
-                    <Link href="/residents" className="text-green-700 hover:text-green-800 font-medium text-sm flex items-center cursor-pointer">
+                    <Link href="/urbino/residents" className="text-green-700 hover:text-green-800 font-medium text-sm flex items-center cursor-pointer">
                       Get your bin
                       <i className="ri-arrow-right-line ml-1"></i>
                     </Link>
@@ -478,16 +478,16 @@ export default function NewsPage() {
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
-                <Link href="/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Heritage & Environment
                 </Link>
-                <Link href="/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Residents' Life
                 </Link>
-                <Link href="/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Visitors' Guide
                 </Link>
-                <Link href="/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Risks & Actions
                 </Link>
               </div>

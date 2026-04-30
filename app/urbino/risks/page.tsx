@@ -454,7 +454,7 @@ export default function RisksPage() {
                   Response Procedures
                 </h3>
                 <div className="space-y-6">
-                  <Link href="/risks/flood-response" className="block border-l-4 border-blue-500 pl-4 hover:bg-blue-50 p-3 rounded-r-lg transition-colors cursor-pointer">
+                  <Link href="/urbino/risks/flood-response" className="block border-l-4 border-blue-500 pl-4 hover:bg-blue-50 p-3 rounded-r-lg transition-colors cursor-pointer">
                     <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
                       Flood Response
                       <i className="ri-external-link-line ml-2 text-blue-600"></i>
@@ -465,7 +465,7 @@ export default function RisksPage() {
                     <div className="text-xs text-blue-600 font-medium">Response Time: Immediate</div>
                   </Link>
                   
-                  <Link href="/risks/landslide-response" className="block border-l-4 border-yellow-500 pl-4 hover:bg-yellow-50 p-3 rounded-r-lg transition-colors cursor-pointer">
+                  <Link href="/urbino/risks/landslide-response" className="block border-l-4 border-yellow-500 pl-4 hover:bg-yellow-50 p-3 rounded-r-lg transition-colors cursor-pointer">
                     <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
                       Landslide Alert
                       <i className="ri-external-link-line ml-2 text-yellow-600"></i>
@@ -476,7 +476,7 @@ export default function RisksPage() {
                     <div className="text-xs text-yellow-600 font-medium">Response Time: 15-30 minutes</div>
                   </Link>
                   
-                  <Link href="/risks/general-emergency" className="block border-l-4 border-green-500 pl-4 hover:bg-green-50 p-3 rounded-r-lg transition-colors cursor-pointer">
+                  <Link href="/urbino/risks/general-emergency" className="block border-l-4 border-green-500 pl-4 hover:bg-green-50 p-3 rounded-r-lg transition-colors cursor-pointer">
                     <h4 className="font-semibold text-gray-900 mb-2 flex items-center">
                       General Emergency
                       <i className="ri-external-link-line ml-2 text-green-600"></i>
@@ -532,16 +532,16 @@ export default function RisksPage() {
               <div>
                 <h4 className="font-semibold mb-4">Quick Links</h4>
                 <div className="space-y-2 text-sm">
-                  <Link href="/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                  <Link href="/urbino/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                     Heritage & Environment
                   </Link>
-                  <Link href="/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                  <Link href="/urbino/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                     Residents' Life
                   </Link>
-                  <Link href="/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                  <Link href="/urbino/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                     Visitors' Guide
                   </Link>
-                  <Link href="/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                  <Link href="/urbino/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                     Risks & Actions
                   </Link>
                 </div>

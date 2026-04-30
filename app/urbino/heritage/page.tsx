@@ -748,16 +748,16 @@ export default function HeritagePage() {
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <div className="space-y-2 text-sm">
-                <Link href="/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/heritage" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Heritage & Environment
                 </Link>
-                <Link href="/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/residents" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Residents' Life
                 </Link>
-                <Link href="/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/visitors" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Visitors' Guide
                 </Link>
-                <Link href="/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                <Link href="/urbino/risks" className="block text-gray-300 hover:text-emerald-400 transition-colors cursor-pointer">
                   Risks & Actions
                 </Link>
               </div>

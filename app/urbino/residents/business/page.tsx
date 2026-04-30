@@ -48,7 +48,7 @@ export default function BusinessPage() {
           <div className="max-w-7xl mx-auto text-center">
             <div className="mb-6">
               <Link
-                href="/residents"
+                href="/urbino/residents"
                 className="inline-flex items-center text-pink-600 hover:text-pink-700 font-medium text-sm cursor-pointer mb-4"
               >
                 <i className="ri-arrow-left-line mr-2"></i>
