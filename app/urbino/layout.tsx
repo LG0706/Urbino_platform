@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Pacifico } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
 const pacifico = Pacifico({
   weight: '400',
