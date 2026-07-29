@@ -1,7 +1,2 @@
-export default function Home() {
-  return (
-    <main>
-      <h1>Coming Soon</h1>
-    </main>
-  )
-}
+'use client';
+export { default } from './urbino/page';
